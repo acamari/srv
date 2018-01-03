@@ -1,0 +1,87 @@
+.\"
+.\" Copyright (c) 2018 Abel Abraham Camarillo Ojeda <acamari@verlet.org>
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd December 11, 2017
+.Dt SRV 1
+.Os
+.Sh NAME
+.Nm srv
+.Nd listens on random port and execute command
+.Sh SYNOPSIS
+.Nm srv
+.Ar utility
+.Op Ar ...
+.Sh DESCRIPTION
+The
+.Nm
+utility listen on a random TCP on
+.Xr ip 4
+address family, prints the random port number on standard output,
+then waits for an incoming connection, when it arrives it executes
+.Ar utility
+passing the socket of the incoming connection as standard input and output to
+.Ar utility
+but standard error is leaved untouched.
+.Sh EXIT STATUS
+The
+.Nm
+utility exits with one of the following values:
+.Bl -tag -width Ds -offset indent
+.It 1
+Some error happened before invocation of
+.Ar utility
+or
+.Ar utility
+exited with 1 status.
+.El
+.Pp
+Otherwise, the exit status of
+.Nm
+shall be that of
+.Ar utility .
+.Sh EXAMPLES
+To start a simple echo server:
+.Bd -literal
+	% srv cat
+	5343
+.Ed
+.Pp
+Now to test it:
+.Bd -literal
+	% echo hello | nc localhost 5343
+	hello
+	%
+.Ed
+.Pp
+To send and store a file:
+.Bd -literal
+	machine1% srv sh -c 'cat > file'
+	5432
+
+	machine2% nc -N machine1 5432 <file
+.Ed
+.Sh SEE ALSO
+.Xr nc 1
+.Sh AUTHORS
+.An Abel Abraham Camarillo Ojeda Aq Mt acamari@verlet.org
+.Sh CAVEATS
+.Ar utility
+argument is only
+.Xr execv 3 Ap ed
+.Em after
+the connection is
+.Xr accept 2 Ap ed ,
+so it's not currently possible to know if its valid until a connection arrives.
+A future version of this utility might fix that.
