@@ -17,4 +17,7 @@ manmarkdown: ${MAN}
 		${MANDOCBIN} -T markdown $$m > $$m.md; \
 	done
 
-release: manhtml manmarkdown
+README.md: srv.1.md
+	cp $? ${?:H}/$@
+
+release: manhtml manmarkdown README.md
