@@ -7,6 +7,7 @@ SRV(1) - General Commands Manual
 # SYNOPSIS
 
 **srv**
+\[**-w**&nbsp;*timeout*]
 *utility*
 \[*...*]
 
