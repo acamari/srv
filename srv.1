@@ -34,6 +34,17 @@ then waits for an incoming connection, when it arrives it executes
 passing the socket of the incoming connection as standard input and output to
 .Ar utility
 but standard error is leaved untouched.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl w Ar timeout
+.Nm
+exits with error status if after
+.Ar timeout
+seconds no connection is received.
+0 equals no timeout.
+The default is 0.
+.El
 .Sh EXIT STATUS
 The
 .Nm
@@ -45,6 +56,9 @@ Some error happened before invocation of
 or
 .Ar utility
 exited with 1 status.
+
+.It >1
+Some other error happened.
 .El
 .Pp
 Otherwise, the exit status of
