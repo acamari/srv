@@ -21,6 +21,7 @@
 #include <fcntl.h>
 #include <err.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 in_port_t
 getport(struct sockaddr *sa)
@@ -69,6 +70,11 @@ cloexec(int fd)
 		err(1, "fcntl");
 }
 
+void
+usage()
+{
+	err(1, "invalid options");
+}
 
 int
 main(int argc, char *argv[])
@@ -77,16 +83,35 @@ main(int argc, char *argv[])
 	int cfd; /* accepted connection socket */
 	struct sockaddr_storage	ss;
 	socklen_t		size;
+	int wflag = 0; /* how many seconds to wait for connection */
+	int c; /* option char */
 
 	size = sizeof(ss);
+	while ((c = getopt(argc, argv, "w:")) != -1) {
+		switch (c) {
+		case 'w':
+			wflag = atoi(optarg);
+			if (wflag < 0)
+				errx(1, "invalid w argument: %d", wflag);
+			break;
+		default:
+			usage();
+		}
+	}
+	argc -= optind;
+	argv += optind;
+	warnx("optind: %d", optind);
 
-	if (argc <= 1)
+	if (argc <= 0)
 		errx(1, "not enough arguments");
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 		err(1, "socket");
 	cloexec(sockfd);
 	if (listen(sockfd, 1) == -1)
 		err(1, "listen");
+	/* wait up to "wflag" seconds for incoming connection */
+	if (wflag)
+		alarm(wflag);
 	if (getsockname(sockfd, (struct sockaddr *)&ss, &size) == -1)
 		err(1, "getsockname");
 	/*
@@ -99,6 +124,6 @@ main(int argc, char *argv[])
 	if (dup2(cfd, STDIN_FILENO) == -1 ||
 	    dup2(cfd, STDOUT_FILENO) == -1)
 		err(1, "dup2");
-	execvp(argv[1], &argv[1]);
+	execvp(argv[0], &argv[0]);
 	err(1, "execvp");
 }
