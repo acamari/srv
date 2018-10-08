@@ -117,6 +117,7 @@ main(int argc, char *argv[])
 	dprintsaddrin((struct sockaddr *)&ss);
 	*/
 	printf("%u\n", getport((struct sockaddr *)&ss));
+	fflush(stdout);
 	if ((cfd = accept(sockfd, NULL, NULL)) == -1)
 		err(1, "accept");
 	alarm(0); /* connection received, timeout no longer needed */
