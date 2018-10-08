@@ -100,7 +100,6 @@ main(int argc, char *argv[])
 	}
 	argc -= optind;
 	argv += optind;
-	warnx("optind: %d", optind);
 
 	if (argc <= 0)
 		errx(1, "not enough arguments");
