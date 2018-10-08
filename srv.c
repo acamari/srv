@@ -84,11 +84,15 @@ main(int argc, char *argv[])
 	struct sockaddr_storage	ss;
 	socklen_t		size;
 	int wflag = 0; /* how many seconds to wait for connection */
+	int dflag = 0; /* dont daemonize before accepting connections */
 	int c; /* option char */
 
 	size = sizeof(ss);
-	while ((c = getopt(argc, argv, "w:")) != -1) {
+	while ((c = getopt(argc, argv, "dw:")) != -1) {
 		switch (c) {
+		case 'd':
+			dflag = 1;
+			break;
 		case 'w':
 			wflag = atoi(optarg);
 			if (wflag < 0)
@@ -108,9 +112,6 @@ main(int argc, char *argv[])
 	cloexec(sockfd);
 	if (listen(sockfd, 1) == -1)
 		err(1, "listen");
-	/* wait up to "wflag" seconds for incoming connection */
-	if (wflag)
-		alarm(wflag);
 	if (getsockname(sockfd, (struct sockaddr *)&ss, &size) == -1)
 		err(1, "getsockname");
 	/*
@@ -118,6 +119,11 @@ main(int argc, char *argv[])
 	*/
 	printf("%u\n", getport((struct sockaddr *)&ss));
 	fflush(stdout);
+	if (!dflag)
+		daemon(1, 0);
+	/* wait up to "wflag" seconds for incoming connection */
+	if (wflag)
+		alarm(wflag);
 	if ((cfd = accept(sockfd, NULL, NULL)) == -1)
 		err(1, "accept");
 	alarm(0); /* connection received, timeout no longer needed */

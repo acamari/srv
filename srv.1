@@ -21,6 +21,7 @@
 .Nd listens on random port and execute command
 .Sh SYNOPSIS
 .Nm srv
+.Op Fl d
 .Op Fl w Ar timeout
 .Ar utility
 .Op Ar ...
@@ -38,6 +39,8 @@ but standard error is leaved untouched.
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
+.It Fl d
+Do not daemonize and log to stderr.
 .It Fl w Ar timeout
 .Nm
 exits with error status if after
