@@ -120,6 +120,7 @@ main(int argc, char *argv[])
 	printf("%u\n", getport((struct sockaddr *)&ss));
 	if ((cfd = accept(sockfd, NULL, NULL)) == -1)
 		err(1, "accept");
+	alarm(0); /* connection received, timeout no longer needed */
 	cloexec(cfd);
 	if (dup2(cfd, STDIN_FILENO) == -1 ||
 	    dup2(cfd, STDOUT_FILENO) == -1)
