@@ -23,6 +23,17 @@ passing the socket of the incoming connection as standard input and output to
 *utility*
 but standard error is leaved untouched.
 
+The options are as follows:
+
+**-w** *timeout*
+
+> **srv**
+> exits with error status if after
+> *timeout*
+> seconds no connection is received.
+> 0 equals no timeout.
+> The default is 0.
+
 # EXIT STATUS
 
 The
@@ -36,6 +47,10 @@ utility exits with one of the following values:
 > or
 > *utility*
 > exited with 1 status.
+
+&gt;1
+
+> Some other error happened.
 
 Otherwise, the exit status of
 **srv**
@@ -81,4 +96,4 @@ accept(2)'ed,
 so it's not currently possible to know if its valid until a connection arrives.
 A future version of this utility might fix that.
 
-OpenBSD 6.2 - December 11, 2017
+OpenBSD 6.3 - December 11, 2017
